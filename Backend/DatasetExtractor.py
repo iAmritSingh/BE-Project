@@ -1,3 +1,7 @@
+from AnalysisModel import PredictRating
+import numpy as np
+
+
 import requests ;
 language_query = """
 query languageStats($username: String!) {
@@ -204,7 +208,8 @@ usernames = [
 'judgementdey',
 'anushriphate'
 ]
-for i in usernames:
+# for i in usernames:
+def getData(i):
   print(i)
   variables = {"username": i}
   advanced = []
@@ -453,7 +458,7 @@ for i in usernames:
   "Binary Indexed Tree":topic['Binary Indexed Tree'],
   "Topological Sort":topic['Topological Sort'],
   "String Matching":topic['String Matching'],
-  "Combinatorics":topic['Array'],
+  "Combinatorics":topic['Combinatorics'],
   "Rolling Hash":topic['Rolling Hash'],
   "Shortest Path":topic['Shortest Path'],
   "Game Theory":topic['Game Theory'],
@@ -483,6 +488,16 @@ for i in usernames:
 
   # to be add later
   # 'badges':badges,'activeYears':activeYears,
+  keys_to_eliminate = ['username', 'OurRating']
+
+# Create a new dictionary by eliminating keys
+  new_dict = {key: value for key, value in dict.items() if key not in keys_to_eliminate}
+  OurRating = PredictRating(new_dict)
+  int_list = OurRating.tolist()
+  
+  # print(int_list[0])
+
+  dict['OurRating'] = int(int_list[0])
 
   with open('Leetcode.csv', 'a') as f_object:
 
@@ -495,3 +510,6 @@ for i in usernames:
 
       f_object.close()
   
+
+
+# getData("Harsh077777")
