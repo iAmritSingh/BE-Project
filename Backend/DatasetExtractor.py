@@ -1,8 +1,9 @@
 from AnalysisModel import PredictRating
 import numpy as np
+import requests 
+from datetime import datetime, timezone, timedelta
+import json
 
-
-import requests ;
 language_query = """
 query languageStats($username: String!) {
   matchedUser(username: $username) {
@@ -36,6 +37,23 @@ query userContestRankingInfo($username: String!) {
     
   }
  
+}
+"""
+
+contest = """query userContestRankingInfo($username: String!) {
+  userContestRankingHistory(username: $username) {
+    attended
+    
+    problemsSolved
+    totalProblems
+    finishTimeInSeconds
+    rating
+    
+    contest {
+      title
+      startTime
+    }
+  }
 }
 """
 
@@ -107,6 +125,51 @@ query userProfileCalendar($username: String!, $year: Int) {
 }
 """
 
+calender = """query userProfileCalendar($username: String!, $year: Int) {
+  matchedUser(username: $username) {
+    userCalendar(year: $year) {
+      activeYears
+      streak
+      totalActiveDays
+      dccBadges {
+        timestamp
+        badge {
+          name
+          icon
+        }
+      }
+      submissionCalendar
+    }
+  }
+}
+"""
+
+def filter_data_last_months(data,num_months):
+    # Get the current date and time
+    current_date = datetime.now(timezone.utc)
+
+    
+
+    start_last_months = current_date - timedelta(days=num_months*30)
+    end_last_months = current_date
+
+   
+    start_timestamp = int(start_last_months.timestamp())
+    end_timestamp = int(end_last_months.timestamp())
+
+   
+    last_months_data = {}
+    for timestamp_str, value in data.items():
+        timestamp = int(timestamp_str)
+        if start_timestamp <= timestamp <= end_timestamp:
+            last_months_data[timestamp] = value
+
+  
+    start_date = datetime.utcfromtimestamp(start_timestamp)
+    end_date = datetime.utcfromtimestamp(end_timestamp)
+
+    return last_months_data
+
 
 from csv import DictWriter
 
@@ -115,7 +178,7 @@ from csv import DictWriter
 from csv import DictWriter
  
 # list of column names
-field_names = ['username','total','easy','medium','hard','rating','C++','Java','Python','Python3','C','C#','JavaScript','TypeScript','PHP','Swift','Kotlin','Dart','Go','Ruby','Scala','Rust','Racket','Erlang','Elixir','MySQL','MS SQL Server','Oracle','Pandas','PostgreSQL','ranking',"Array", "String","Hash Table","Math","Dynamic Programming","Sorting","Greedy","Depth-First Search","Binary Search","Database","Breadth-First Search","Tree","Matrix", "Two Pointers", "Bit Manipulation","Binary Tree","Heap (Priority Queue)","Stack","Prefix Sum","Simulation","Graph","Design","Counting","Sliding Window","Backtracking", "Union Find","Enumeration", "Linked List", "Ordered Set", "Monotonic Stack","Trie","Number Theory", "Divide and Conquer", "Recursion", "Bitmask",  "Queue", "Binary Search Tree","Segment Tree", "Memoization", "Hash Function", "Geometry", "Binary Indexed Tree", "Topological Sort",  "String Matching","Combinatorics","Rolling Hash","Shortest Path","Game Theory","Data Stream","Interactive","Brainteaser","Monotonic Queue", "Randomized","Merge Sort", "Iterator", "Concurrency","Doubly-Linked List","Probability and Statistics","Quickselect","Bucket Sort","Suffix Array","Minimum Spanning Tree", "Counting Sort", "Shell",  "Line Sweep",  "Reservoir Sampling",   "Strongly Connected Component", "Eulerian Circuit",  "Radix Sort",  "Rejection Sampling",  "Biconnected Component",'contestAttended','streak','totalActiveDays','OurRating']
+field_names = ['username','total','easy','medium','hard','rating','C++','Java','Python','Python3','C','C#','JavaScript','TypeScript','PHP','Swift','Kotlin','Dart','Go','Ruby','Scala','Rust','Racket','Erlang','Elixir','MySQL','MS SQL Server','Oracle','Pandas','PostgreSQL','ranking',"Array", "String","Hash Table","Math","Dynamic Programming","Sorting","Greedy","Depth-First Search","Binary Search","Database","Breadth-First Search","Tree","Matrix", "Two Pointers", "Bit Manipulation","Binary Tree","Heap (Priority Queue)","Stack","Prefix Sum","Simulation","Graph","Design","Counting","Sliding Window","Backtracking", "Union Find","Enumeration", "Linked List", "Ordered Set", "Monotonic Stack","Trie","Number Theory", "Divide and Conquer", "Recursion", "Bitmask",  "Queue", "Binary Search Tree","Segment Tree", "Memoization", "Hash Function", "Geometry", "Binary Indexed Tree", "Topological Sort",  "String Matching","Combinatorics","Rolling Hash","Shortest Path","Game Theory","Data Stream","Interactive","Brainteaser","Monotonic Queue", "Randomized","Merge Sort", "Iterator", "Concurrency","Doubly-Linked List","Probability and Statistics","Quickselect","Bucket Sort","Suffix Array","Minimum Spanning Tree", "Counting Sort", "Shell",  "Line Sweep",  "Reservoir Sampling",   "Strongly Connected Component", "Eulerian Circuit",  "Radix Sort",  "Rejection Sampling",  "Biconnected Component",'contestAttended','streak','totalActiveDays','contest_LastYear','contest_6months','contest_1month','last1monthActiveDays','last6monthActiveDays','OurRating']
 
  
 
@@ -386,6 +449,79 @@ def getData(i):
   streak = (r['data']['matchedUser']['userCalendar']['streak'])
   totalActiveDays = (r['data']['matchedUser']['userCalendar']['totalActiveDays'])
 
+  response = requests.get(url=url, json={"query": contest, "variables":variables})
+  r = response.json()
+  user_contest_ranking_history = r['data']['userContestRankingHistory']
+  last_72_entries = user_contest_ranking_history[-72:]
+
+
+  attended_contest=last_72_entries
+  # print(attended_contest)
+  attended_contest_count = 0
+
+
+
+  # Iterate over the contest entries
+  for entry in attended_contest:
+        
+      if entry['attended']:
+          attended_contest_count += 1
+
+ 
+
+  contestLastYear = attended_contest_count
+
+
+  last_36_entries = user_contest_ranking_history[-36:]
+
+ 
+  attended_contest_count = 0
+
+
+
+  # Iterate over the contest entries
+  for entry in last_36_entries:
+        
+      if entry['attended']:
+          attended_contest_count += 1
+
+
+  contestlast6months = attended_contest_count
+
+
+  last_1_entries = user_contest_ranking_history[-6:]
+
+  
+  
+
+  # print(attended_contest)
+  attended_contest_count = 0
+
+
+
+  # Iterate over the contest entries
+  for entry in last_1_entries:
+        
+      if entry['attended']:
+          attended_contest_count += 1
+
+  contestlastmonth = attended_contest_count
+
+  response = requests.get(url=url, json={"query": calender, "variables":variables})
+  r = response.json()
+  r = r['data']['matchedUser']['userCalendar']['submissionCalendar']
+
+  data_str = r
+  data_dict = json.loads(data_str)
+  print(data_dict)
+
+
+  filtered_data = filter_data_last_months(data_dict, 6)
+  Last6monthsSubmission = len(filtered_data)
+  filtered_data = filter_data_last_months(data_dict, 1)
+  Last1monthsSubmission = len(filtered_data)
+
+
 
 
   
@@ -484,7 +620,7 @@ def getData(i):
   "Eulerian Circuit":topic['Eulerian Circuit'],
   "Radix Sort":topic['Radix Sort'],
   "Rejection Sampling":topic['Rejection Sampling'],
-  "Biconnected Component":topic['Biconnected Component'],'contestAttended':contestAttended,'streak':streak,'totalActiveDays':totalActiveDays,'OurRating':OurRating}
+  "Biconnected Component":topic['Biconnected Component'],'contestAttended':contestAttended,'streak':streak,'totalActiveDays':totalActiveDays,'contest_LastYear':contestLastYear,'contest_6months':contestlast6months,'contest_1month':contestlastmonth,'last1monthActiveDays':Last1monthsSubmission,'last6monthActiveDays':Last6monthsSubmission,'OurRating':OurRating}
 
   # to be add later
   # 'badges':badges,'activeYears':activeYears,
