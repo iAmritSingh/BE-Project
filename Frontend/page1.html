@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="script.js" defer></script>
+    <script src='https://cdn.plot.ly/plotly-2.30.0.min.js'></script>
+
+    <style>
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background-color: #f8f9fa;
+            /* Light gray background */
+
+            margin: 0;
+
+            padding: 0;
+
+        }
+
+
+
+        .container {
+
+            max-width: 900px;
+
+            margin: 50px auto;
+
+            text-align: center;
+
+        }
+
+
+
+        h1 {
+
+            color: #007bff;
+            /* LeetCode blue */
+
+            margin-bottom: 20px;
+
+        }
+
+
+
+        form {
+
+            margin-bottom: 20px;
+
+        }
+
+
+
+        input[type="text"] {
+
+            padding: 10px;
+
+            font-size: 16px;
+
+            width: 300px;
+
+            border-radius: 5px;
+
+            border: 1px solid #ccc;
+
+        }
+
+
+
+        button {
+
+            padding: 10px 20px;
+
+            font-size: 16px;
+
+            background-color: #007bff;
+
+            color: #fff;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            transition: background-color 0.3s ease;
+
+        }
+
+
+
+        button:hover {
+
+            background-color: #0056b3;
+            /* Darker LeetCode blue on hover */
+
+        }
+
+
+
+        #myDiv,
+        #Language_Chart,
+        #DSAChart {
+
+            margin-bottom: 40px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            background-color: #fff;
+
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+            width: 100%;
+
+            height: 500px;
+
+            display: none;
+
+        }
+
+
+
+        img {
+
+            width: 100px;
+            /* Adjust the size of the logo as needed */
+
+            margin-bottom: 20px;
+
+        }
+
+
+
+        select {
+
+            padding: 10px;
+
+            font-size: 16px;
+
+            border-radius: 5px;
+
+            border: 1px solid #ccc;
+
+            width: 300px;
+
+        }
+
+
+
+        /* Center align the select element */
+
+        #DsaMenu {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+        }
+
+
+
+        /* Adjust the label position */
+
+        label {
+
+            margin-right: 10px;
+
+        }
+    </style>
+
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+  
+        document.getElementById("myform").addEventListener("submit", function(event) {
+  
+            event.preventDefault(); // Prevent form submission
+  
+    
+  
+            // Show the display blocks
+  
+            document.getElementById('myDiv').style.display = 'block';
+  
+            document.getElementById('Language_Chart').style.display = 'block';
+  
+            document.getElementById('DSAChart').style.display = 'block';
+  
+        });
+  
+    });
+  
+    </script>
+
+
+
+
+</head>
+
+<body>
+    <div class="container">
+        <img src="leetcode-logo.png" alt="LeetCode Logo">
+        <h1>LeetCode Profile Analyzer</h1>
+        <form id="myform">
+            Username:<input type="text" name="username" id="username" placeholder="Enter your leetcode profile">
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="myDiv" style="width: 900px; height: 500px;"></div>
+        <div id="Language_Chart" style="width: 900px; height: 500px;"></div>
+        <div id="DSAChart" style="width: 900px; height: 500px;"></div>
+
+
+    </div>
+
+
+
+
+
+
+</body>
+
+</html>

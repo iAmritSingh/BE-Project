@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leetcode Profile Analyzer</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .content-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 800px;
+      text-align: center;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    h1 {
+      color: #333;
+      font-size: 36px;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 30px;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .proceed-btn {
+      display: inline-block;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .proceed-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Additional styling for the logos */
+    .logo {
+      display: inline-block;
+      margin: 0 10px;
+      width: 50px; /* Adjust size as needed */
+      opacity: 0.7; /* Adjust opacity as needed */
+    }
+
+    /* Animation for content */
+    .fade-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .image-container {
+      width: 100%;
+      height: 50vh;
+      background-image: url('your-image.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="content-container">
+    <div class="container">
+      <!-- Logos -->
+      <img src="leetcode-logo.png" alt="LeetCode Logo" class="logo">
+      <img src="codeforces_logo.png" alt="Codeforces Logo" class="logo">
+      <img src="codechef-logo.jpg" alt="CodeChef Logo" class="logo">
+      
+      <!-- Title and description -->
+      <h1 class="fade-in">Coding Profile Analyzer</h1>
+      <p class="fade-in">Unlock insights into your Leetcode performance!</p>
+      
+      <!-- Proceed button -->
+      <a href="page1.html" class="proceed-btn fade-in">Proceed</a>
+    </div>
+  </div>
+
+  <div class="image-container"></div>
+</body>
+</html>

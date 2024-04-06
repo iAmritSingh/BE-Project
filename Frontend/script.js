@@ -6,26 +6,23 @@ function showourrating(userdata) {
     // console.log(userdata);
     const ourRating = Number(userdata.OurRating);
     // console.log(ourRating);
-    google.charts.load('current', { 'packages': ['corechart'] });
-    google.charts.setOnLoadCallback(() => {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Rating');
-        data.addColumn('number', 'Percentage');
-        console.log(ourRating);
-        data.addRows([
-        ['OurRating', ourRating],
-        ['Rest',100-ourRating]
-        
-    ]);
+    
 
-        var options = {
-            title: 'Your Current Rating'
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-
-        chart.draw(data, options);
-    });
+    var data = [
+        {
+          domain: { x: [0, 1], y: [0, 1] },
+          value: ourRating,
+          title: { text: "Rating" },
+          type: "indicator",
+          mode: "gauge+number",
+          delta: { reference: 400 },
+          gauge: { axis: { range: [0, 100] } }
+        }
+      ];
+      
+      var layout = { width: 600, height: 400 };
+      Plotly.newPlot('myDiv', data, layout);
+      
 
     showLanguagesChart(userdata);
     showDSAchart(userdata);
@@ -127,30 +124,5 @@ form.addEventListener('submit', (event) => {
         });
 });
 
-DSAForm.addEventListener('submit', (event) => {
-    event.preventDefault(); // Prevent default form submission
 
-    const name = document.getElementById('DSA').value;
-
-
-    // Create a FormData object to hold form data
-    const formData = new FormData();
-    formData.append('DSATopic', name);
-
-
-    // Send AJAX request to Flask route
-    fetch('http://127.0.0.1:5000/showDSA', {
-        method: 'POST',
-        body: formData,
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            // showourrating(data); // Handle successful response
-
-        })
-        .catch(error => {
-            console.error("Error:", error); // Handle errors
-        });
-});
 
