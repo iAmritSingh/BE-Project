@@ -2,6 +2,9 @@ const form = document.getElementById('myform');
 const DSAForm = document.getElementById('DsaMenu');
 
 
+// document.head.appendChild(style);
+
+
 function showourrating(userdata) {
     // console.log(userdata);
     const ourRating = Number(userdata.OurRating);
@@ -12,7 +15,7 @@ function showourrating(userdata) {
         {
           domain: { x: [0, 1], y: [0, 1] },
           value: ourRating,
-          title: { text: "Rating" },
+          title: { text: "Profile Score" },
           type: "indicator",
           mode: "gauge+number",
           delta: { reference: 400 },
@@ -20,7 +23,7 @@ function showourrating(userdata) {
         }
       ];
       
-      var layout = { width: 600, height: 400 };
+      var layout = { width: 500, height: 400 };
       Plotly.newPlot('myDiv', data, layout);
       
 
@@ -53,7 +56,7 @@ function showLanguagesChart(userdata){
           }
 
         var options = {
-            title: 'Languages Chart'
+            title: 'Languages Used by User'
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('Language_Chart'));
@@ -84,7 +87,7 @@ function showDSAchart(userdata){
           }
 
         var options = {
-            title: 'DSA Topics Chart'
+            title: 'Topic Wise Analysis'
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('DSAChart'));
