@@ -4,6 +4,7 @@ from flask_cors import CORS
 import pandas as pd
 import json
 api_module = importlib.import_module("DatasetExtractor")
+api_module1 = importlib.import_module('Recommendations')
 
 
 data = pd.read_csv('./Leetcode.csv')
@@ -28,25 +29,36 @@ def ourratingChart(username):
        
     programming_languages = []
     for i in range(6,30,1):
+        
         programming_languages.append({'Language':data.columns[i],'ProblemSolved':int(userData[i])})
 
     dsaTopics = []
     for i in range(31,102,1) :
         dsaTopics.append({'DSATopics':data.columns[i],'ProblemSolved':int(userData[i])})
+
+    Recommendations = api_module1.recommend_skills(username)
         
-    # print(programming_languages)
 
     senddata = {
         'OurRating':str(userData[-1]),
         'programmingLanguages': programming_languages,
-        'DSATopics':dsaTopics
+        'DSATopics':dsaTopics,
+        'totalActiveDays' : int(userData['totalActiveDays']),
+        'contest_LastYear' : int(userData['contest_LastYear']),
+        'contest_6months' : int(userData['contest_6months']),
+        'contest_1month' : int(userData['contest_1month']),
+        'last1monthActiveDays' : int(userData['last1monthActiveDays']),
+        'last6monthActiveDays' : int(userData['last6monthActiveDays']),
+        'Rating':int(userData['rating']),
+        'last1monthActiveDays':int(userData['last1monthActiveDays']),
+        'last6monthActiveDays':int(userData['last6monthActiveDays']),
+        'totalActiveDays':int(userData['totalActiveDays']),
+        'Recommendations':Recommendations
     }
 
     return json.dumps(senddata)
 
-def DSAPTopic():
-    df = data[['username','Array']]
-    print(df)
+
 
 @app.route('/show', methods=['GET', 'POST'])
 def show():
@@ -54,12 +66,7 @@ def show():
 #    print(username)
    return ourratingChart(username)
 
-@app.route('/showDSA', methods=['GET', 'POST'])
-def showDSA():
-   DSATopic = request.form['DSATopic']
-#    print(DSATopic)
-   DSAPTopic()
-   return json.dumps(DSATopic)
+
 
 @app.route('/get_chart_data')
 def get_chart_data():

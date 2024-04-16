@@ -104,7 +104,8 @@
       
         #myDiv,
         #Language_Chart,
-        #DSAChart {
+        #DSAChart,
+        #DailyPracticeAnalysis{
 
             margin-bottom: 40px;
 
@@ -174,6 +175,10 @@
             margin-right: 10px;
 
         }
+
+
+        
+
     </style>
 
     <script>
@@ -193,6 +198,9 @@
             document.getElementById('Language_Chart').style.display = 'block';
   
             document.getElementById('DSAChart').style.display = 'block';
+
+            document.getElementById('ContestAnalysis').style.display = 'block';
+            document.getElementById('DailyPracticeAnalysis').style.display = 'block';
   
         });
   
@@ -216,7 +224,16 @@
 
         <div id="myDiv" style="width: 900px; height: 500px;"></div>
         <div id="Language_Chart" style="width: 900px; height: 500px;"></div>
+        <div id="LanguageRecommendation"></div>
         <div id="DSAChart" style="width: 900px; height: 500px;"></div>
+        <div id="DSAContainer" ></div>
+        <div id="ContestAnalysis" >
+            <div id="Chart1month" ></div>
+            <div id="Chart6month" ></div>
+            <div id="Chart12month" ></div>
+            
+        </div>
+        <div id="DailyPracticeAnalysis" style="width: 900px; height: 500px;"></div>
 
 
     </div>
