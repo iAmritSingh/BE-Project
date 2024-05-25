@@ -18,7 +18,7 @@ def ourratingChart(username):
 
     if username not in data['username'].values:
         api_module.getData(username)
-        # return json.dumps({'message': "User not found"})
+        
 
     
 
@@ -36,7 +36,16 @@ def ourratingChart(username):
     for i in range(31,102,1) :
         dsaTopics.append({'DSATopics':data.columns[i],'ProblemSolved':int(userData[i])})
 
-    Recommendations = api_module1.recommend_skills(username)
+    Difficulty = []
+    for i in range(2,5,1):
+        Difficulty.append({'Difficulty':data.columns[i],'ProblemSolved':int(userData[i])})
+
+    Recommendations = api_module1.get_recommendations(username)
+    print(Recommendations)
+    Recommends =[]
+    for skill, est in Recommendations:
+        if est>0 :
+            Recommends.append(skill)
         
 
     senddata = {
@@ -53,7 +62,8 @@ def ourratingChart(username):
         'last1monthActiveDays':int(userData['last1monthActiveDays']),
         'last6monthActiveDays':int(userData['last6monthActiveDays']),
         'totalActiveDays':int(userData['totalActiveDays']),
-        'Recommendations':Recommendations
+        'Recommendations':Recommends,
+        'Difficulty': Difficulty
     }
 
     return json.dumps(senddata)

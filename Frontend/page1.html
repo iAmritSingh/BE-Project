@@ -101,11 +101,10 @@
 
         }
 
-      
+
         #myDiv,
         #Language_Chart,
-        #DSAChart,
-        #DailyPracticeAnalysis{
+        #DSAChart,#DifficultyChart {
 
             margin-bottom: 40px;
 
@@ -176,36 +175,72 @@
 
         }
 
+        #ContestAnalysis,
+        #DailyPracticeAnalysis {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
 
-        
+            border: 1px solid #ccc;
 
+            border-radius: 8px;
+
+            background-color: #fff;
+
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+            width: 100%;
+
+            /* height: 800px; */
+            /* Make the container a flexbox */
+        }
+
+        #ContestAnalysis div {
+            flex: 1;
+            /* Make each child div take up equal space */
+            margin: 0 10px;
+
+
+            /* Add some margin between plots */
+        }
+
+        #DailyPracticeAnalysis div {
+            flex: 1;
+            /* Make each child div take up equal space */
+            margin: 0 10px;
+
+
+            /* Add some margin between plots */
+        }
+        #title1,#title2{
+            display: none;
+        }
     </style>
 
     <script>
 
-    document.addEventListener("DOMContentLoaded", function() {
-  
-        document.getElementById("myform").addEventListener("submit", function(event) {
-  
-            event.preventDefault(); // Prevent form submission
-  
-    
-  
-            // Show the display blocks
-  
-            document.getElementById('myDiv').style.display = 'block';
-  
-            document.getElementById('Language_Chart').style.display = 'block';
-  
-            document.getElementById('DSAChart').style.display = 'block';
+        document.addEventListener("DOMContentLoaded", function () {
 
-            document.getElementById('ContestAnalysis').style.display = 'block';
-            document.getElementById('DailyPracticeAnalysis').style.display = 'block';
-  
+            document.getElementById("myform").addEventListener("submit", function (event) {
+
+                event.preventDefault(); // Prevent form submission
+
+
+
+                // Show the display blocks
+
+                document.getElementById('myDiv').style.display = 'block';
+
+                document.getElementById('Language_Chart').style.display = 'block';
+
+                document.getElementById('DSAChart').style.display = 'block';
+                document.getElementById('DifficultyChart').style.display = 'block';
+                document.getElementById('title1').style.display = 'block';
+                document.getElementById('title2').style.display = 'block';
+            });
+
         });
-  
-    });
-  
+
     </script>
 
 
@@ -226,22 +261,28 @@
         <div id="Language_Chart" style="width: 900px; height: 500px;"></div>
         <div id="LanguageRecommendation"></div>
         <div id="DSAChart" style="width: 900px; height: 500px;"></div>
-        <div id="DSAContainer" ></div>
-        <div id="ContestAnalysis" >
-            <div id="Chart1month" ></div>
-            <div id="Chart6month" ></div>
-            <div id="Chart12month" ></div>
-            
-        </div>
-        <div id="DailyPracticeAnalysis" style="width: 900px; height: 500px;"></div>
+        <div id="DSAContainer"></div>
+        <div id="DifficultyChart" style="width: 900px; height: 500px;"></div>
+        
 
+        <h3 id="title1">Contest Analysis</h3>
+        <div id="ContestAnalysis">
+            <div id="Chart1month"></div>
+            <div id="Chart6month"></div>
+            <div id="Chart12month"></div>
+            <div id="ConstestRating"></div>
+
+        </div>
+        <div id="ConstestRecommendation"></div>
+        <h3 id="title2">Daily Practice Analysis</h3>
+        <div id="DailyPracticeAnalysis">
+            <div id="Daily1month"></div>
+            <div id="Daily6month"></div>
+            <div id="Daily12month"></div>
+        </div>
+        <div id="DailyRecommendation"></div>
 
     </div>
-
-
-
-
-
 
 </body>
 

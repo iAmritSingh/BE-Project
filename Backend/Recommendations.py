@@ -1,54 +1,75 @@
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from surprise import Dataset, Reader, KNNBasic
+from surprise.model_selection import train_test_split
+from surprise import accuracy
+from surprise.dump import dump, load
+from collections import defaultdict
 
-data = pd.read_csv('./Leetcode.csv')
-
-data = data.drop(['total','easy','medium','hard','rating','C++','Java','Python','Python3','C','C#','JavaScript','TypeScript','PHP','Swift','Kotlin','Dart','Go','Ruby','Scala','Rust','Racket','Erlang','Elixir','MySQL','MS SQL Server','Oracle','Pandas','PostgreSQL','ranking','contestAttended','streak','totalActiveDays','OurRating','contest_LastYear','contest_6months','contest_1month','last1monthActiveDays','last6monthActiveDays'],axis=1)
-
-relevant_skill_columns = data.columns[1:]
-
-vectorizer = CountVectorizer()
-skill_matrix = vectorizer.fit_transform(data[relevant_skill_columns])
-
-similarity_matrix = cosine_similarity(skill_matrix)
+# Read the LeetCode dataset
 
 
-def recommend_skills(username, k=5):
-  # Find all rows for the target user
-  user_data = data[data["username"] == username]
-  # print(len(user_data))
+def get_recommendations(username):
+    df = pd.read_csv('./Leetcode.csv')
 
-  # Handle cases where a user has only one row
-  if len(user_data) == 1:
-      user_index = user_data.index.values[0]
-      user_skills = user_data[relevant_skill_columns].values.tolist()[0]  # Assuming skills in separate columns
-  else:
-      # Combine all skills from the user's rows into a set (assuming unique skills)
-      user_skills = set(user_data[relevant_skill_columns].values.flatten())
+    # Drop unnecessary columns
+    df = df.drop(['total', 'easy', 'medium', 'hard', 'rating', 'C++', 'Java', 'Python', 'Python3', 
+                'C', 'C#', 'JavaScript', 'TypeScript', 'PHP', 'Swift', 'Kotlin', 'Dart', 'Go', 
+                'Ruby', 'Scala', 'Rust', 'Racket', 'Erlang', 'Elixir', 'MySQL', 'MS SQL Server', 
+                'Oracle', 'Pandas', 'PostgreSQL', 'ranking', 'contestAttended', 'streak', 
+                'totalActiveDays', 'OurRating', 'contest_LastYear', 'contest_6months', 
+                'contest_1month', 'last1monthActiveDays', 'last6monthActiveDays'], axis=1)
 
-  # Calculate similar users for all cases (single or multiple rows)
- 
-  user_index = user_data.index.values[0]
-  
-  similar_users = similarity_matrix[user_index].argsort()[-k:][::-1]
-  
-  
-  # Extract skills from neighbors
-  neighbor_skills = data.loc[similar_users, relevant_skill_columns].values.tolist()
-  neighbor_skills_flat = [item for sublist in neighbor_skills for item in sublist]  # Flatten nested list
-  unique_skills = set(neighbor_skills_flat) - set(user_skills)
-  
-  # Filter recommended skills based on valid indices
-  valid_skill_indices = range(len(vectorizer.get_feature_names_out()))  # Get valid skill indices
-  filtered_unique_skills = unique_skills.intersection(valid_skill_indices)
-  
-  # Map recommended skill indices to skill names using CountVectorizer vocabulary
-  recommended_skill_names = [vectorizer.get_feature_names_out()[idx] for idx in filtered_unique_skills]
-  return recommended_skill_names
-# Example usage
-# username = "vivekthedev"
-# k = 5  # Number of recommendations
+    # Reshape the data into long format
+    df_long = df.melt(id_vars=['username'], var_name='skill', value_name='number_of_questions')
 
-# recommended_skills = recommend_skills(username, k)
-# print(f"Recommended skills for {username}: {recommended_skills}")
+    # Replace 0 values with -1
+    df_long['number_of_questions'] = df_long['number_of_questions'].replace(0, -1)
+
+    # Define a reader object
+    reader = Reader(rating_scale=(-1, 5))
+
+    # Load dataset from DataFrame
+    dataset = Dataset.load_from_df(df_long[['username', 'skill', 'number_of_questions']], reader)
+
+    # Set seed for reproducibility
+    seed = 42
+
+    # Split the dataset into train and test sets
+    trainset, testset = train_test_split(dataset, test_size=0.2, random_state=seed)
+
+    # Choose a similarity metric and build the model
+    sim_options = {'name': 'cosine', 'user_based': True}
+    model = KNNBasic(sim_options=sim_options)
+
+    # Train the model
+    model.fit(trainset)
+
+    # Save the trained model to disk
+    # model_path = 'knn_model.pkl'
+    # dump(model_path, algo=model)
+
+
+
+    # Load the trained model from disk
+    # _, loaded_model = load(model_path)
+    
+    # Create a dictionary to store recommended items for each user
+    recommendations = defaultdict(list)
+    
+    # Make predictions for the test set
+    predictions = model.test(testset)
+    
+    # Iterate over the predictions
+    for prediction in predictions:
+        uid = prediction.uid  # Get the user ID
+        iid = prediction.iid  # Get the item ID (skill/topic)
+        est = prediction.est  # Get the estimated rating
+        
+        # Store the recommended item for the user with its estimated rating
+        recommendations[uid].append((iid, est))
+    
+    # Sort the recommendations for the provided user based on the estimated rating
+    user_recs = recommendations.get(username, [])
+    user_recs.sort(key=lambda x: x[1], reverse=True)
+    
+    return user_recs

@@ -29,6 +29,7 @@ function showourrating(userdata) {
 
     showLanguagesChart(userdata);
     showDSAchart(userdata);
+    showDifficulty(userdata);
     
     showContestAnalysis(userdata);
     showDailyAnalysis(userdata);
@@ -38,7 +39,7 @@ function showourrating(userdata) {
 
 function showContestAnalysis(userdata){
 
-    const container = document.getElementById('ContestAnalysis');
+    const container = document.getElementById('ConstestRecommendation');
 
     var data = [
         {
@@ -52,7 +53,7 @@ function showContestAnalysis(userdata){
         }
       ];
       
-    var layout = { width: 300, height: 300 };
+    var layout = { width: 350, height: 300 };
     Plotly.newPlot('Chart1month', data, layout);
  
     // const paragraph1 = document.createElement('p');
@@ -71,7 +72,7 @@ function showContestAnalysis(userdata){
         }
       ];
       
-    var layout = { width: 300, height: 300 };
+    var layout = { width: 350, height: 300 };
     Plotly.newPlot('Chart6month', data, layout);
 
     var data = [
@@ -86,8 +87,25 @@ function showContestAnalysis(userdata){
         }
       ];
       
-    var layout = { width: 300, height: 300 };
+    var layout = { width: 350, height: 300 };
     Plotly.newPlot('Chart12month', data, layout);
+
+
+
+    var data = [
+        {
+          domain: { x: [0, 1], y: [0, 1] },
+          value: userdata.Rating,
+          title: { text: "Contest Rating" },
+          type: "indicator",
+          mode: "gauge+number",
+          delta: { reference: 400 },
+          gauge: { axis: { range: [0,] } }
+        }
+      ];
+      
+    var layout = { width: 350, height: 300 };
+    Plotly.newPlot('ConstestRating', data, layout);
 
 
     // const paragraph2 = document.createElement('p');
@@ -99,14 +117,19 @@ function showContestAnalysis(userdata){
     // paragraph3.textContent = 'Contest attended in last 1 year :'+userdata.contest_LastYear+' (out of 72)';
     // container.appendChild(paragraph3);
 
-    const paragraph4 = document.createElement('p');
-    paragraph4.textContent = 'Your Contest rating is :'+userdata.Rating;
-    container.appendChild(paragraph4);
+    // const paragraph4 = document.createElement('p');
+    // paragraph4.textContent = 'Your Contest rating is :'+userdata.Rating;
+    // container.appendChild(paragraph4);
 
     Rating = userdata.Rating;
     consistency_score = (userdata.contest_1month/6)*100
 
     const paragraph5 = document.createElement('p');
+
+    const contestheading = document.createElement('h3');
+
+    contestheading.textContent = 'Recommendations'
+    container.appendChild(contestheading);
     
     
     if(Rating<1500){
@@ -154,24 +177,74 @@ function showContestAnalysis(userdata){
 }
 
 function showDailyAnalysis(userdata){
-    const container = document.getElementById('DailyPracticeAnalysis');
- 
-    const paragraph1 = document.createElement('p');
-    paragraph1.textContent = 'Total active days in last 1 month :'+userdata.last1monthActiveDays;
-    container.appendChild(paragraph1);
+    const container = document.getElementById('DailyRecommendation');
 
 
-    const paragraph2 = document.createElement('p');
-    paragraph2.textContent = 'Total active days in last 6 month :'+userdata.last6monthActiveDays;
-    container.appendChild(paragraph2);
+    var data = [
+        {
+          domain: { x: [0, 1], y: [0, 1] },
+          value: userdata.last1monthActiveDays,
+          title: { text: "Last 1 Month" },
+          type: "indicator",
+          mode: "gauge+number",
+          delta: { reference: 400 },
+          gauge: { axis: { range: [0,30] } }
+        }
+      ];
+      
+    var layout = { width: 350, height: 300 };
+    Plotly.newPlot('Daily1month', data, layout);
 
- 
-    const paragraph3 = document.createElement('p');
-    paragraph3.textContent = 'Total active days in last 1 year :'+userdata.totalActiveDays;
-    container.appendChild(paragraph3);
+
+    var data = [
+        {
+          domain: { x: [0, 1], y: [0, 1] },
+          value: userdata.last6monthActiveDays,
+          title: { text: "Last 6 Month" },
+          type: "indicator",
+          mode: "gauge+number",
+          delta: { reference: 400 },
+          gauge: { axis: { range: [0,180] } }
+        }
+      ];
+      
+    var layout = { width: 350, height: 300 };
+    Plotly.newPlot('Daily6month', data, layout);
 
 
+    var data = [
+        {
+          domain: { x: [0, 1], y: [0, 1] },
+          value: userdata.totalActiveDays,
+          title: { text: "Last 12 Month" },
+          type: "indicator",
+          mode: "gauge+number",
+          delta: { reference: 400 },
+          gauge: { axis: { range: [0,365] } }
+        }
+      ];
+      
+    var layout = { width: 350, height: 300 };
+    Plotly.newPlot('Daily12month', data, layout);
 
+    const DailyAnalysisHeading = document.createElement('h3');
+    DailyAnalysisHeading.textContent = 'Recommendations'
+    container.appendChild(DailyAnalysisHeading);
+
+    const DailyAnalysisRecommendation = document.createElement('p');
+
+    let DailyAnalysisScore = (userdata.last1monthActiveDays/30)*100;
+    
+
+    DailyAnalysisRecommendation.textContent = "Your Daily Practice Consistency is : "+ DailyAnalysisScore; 
+    if(DailyAnalysisScore>75){
+        DailyAnalysisRecommendation.textContent += ". Just keep practice."
+    }
+    else{
+        DailyAnalysisRecommendation.textContent += ". You have to practice problem daily if you want to improve your rating ."
+    }
+
+    container.appendChild(DailyAnalysisRecommendation);
 
 }
 
@@ -244,6 +317,39 @@ function showLanguagesChart(userdata){
 
 }
 
+function showDifficulty(userdata){
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    const Difficulty = userdata.Difficulty;
+    // console.log(Difficulty)
+    // dsaTopics.sort((a, b) => b.ProblemSolved - a.ProblemSolved);
+
+    google.charts.setOnLoadCallback(() => {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Difficulty');
+        data.addColumn('number', 'Problem solved');
+        // console.log(ourRating);
+        for (const obj of Difficulty) {
+            // console.log(obj)
+
+            const row = [obj.Difficulty, obj.ProblemSolved];
+            // console.log(row)
+            data.addRow(row);
+          }
+
+        var options = {
+            title: 'Difficulty Analysis'
+        };
+
+        // console.log()
+
+        var chart = new google.visualization.PieChart(document.getElementById('DifficultyChart'));
+
+        chart.draw(data, options);
+    });
+}
+
 function showDSAchart(userdata){
 
     google.charts.load('current', { 'packages': ['corechart'] });
@@ -281,6 +387,7 @@ function showDSAchart(userdata){
 
     DSAheading.textContent = 'Recommendations'
     DSAContainer.appendChild(DSAheading);
+    console.log(userdata.Recommendations)
     const formattedSkills = userdata.Recommendations.map((skill) => {
         // Split the skill name by underscores
         const words = skill.split("_");
@@ -326,6 +433,7 @@ form.addEventListener('submit', (event) => {
         })
         .catch(error => {
             console.error("Error:", error); // Handle errors
+            alert("User Not Found");
         });
 });
 
